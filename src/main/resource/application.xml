@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd
+">
+
+    <bean id="simpleMessageListener" class="ml.guxing.script.mq.SimpleMessageListener"/>
+
+    <bean id="rabbitConnectionFactory" class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
+        <property name="addresses" value="192.168.56.102:5672"/>
+        <property name="virtualHost" value="/hy"/>
+        <property name="username" value="hy"/>
+        <property name="password" value="123"/>
+        <property name="cacheMode" value="CHANNEL"/>
+        <property name="channelCacheSize" value="3"/>
+        <property name="channelCheckoutTimeout" value="3000"/>
+    </bean>
+
+    <bean id="rabbitTemplate" class="org.springframework.amqp.rabbit.core.RabbitTemplate">
+        <property name="connectionFactory" ref="rabbitConnectionFactory"/>
+        <property name="encoding" value="UTF-8"/>
+    </bean>
+
+    <bean id="rabbitAdmin" class="org.springframework.amqp.rabbit.core.RabbitAdmin">
+        <constructor-arg index="0" ref="rabbitTemplate"/>
+    </bean>
+
+    <bean name="simpleMessageListenerContainer"
+          class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
+        <property name="connectionFactory" ref="rabbitConnectionFactory"/>
+        <property name="acknowledgeMode" value="AUTO"/>
+        <property name="concurrentConsumers" value="1"/>
+        <property name="maxConcurrentConsumers" value="6"/>
+        <property name="queues">
+            <array>
+                <bean class="org.springframework.amqp.core.Queue">
+                    <constructor-arg name="name" value="ml.guxing.script.one"/>
+                    <constructor-arg name="durable" value="true"/>
+                    <constructor-arg name="exclusive" value="false"/>
+                    <constructor-arg name="autoDelete" value="false"/>
+                </bean>
+            </array>
+        </property>
+        <property name="omessageListener" ref="simpleMessageListener"/>
+    </bean>
+
+</beans>

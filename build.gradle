@@ -1,0 +1,57 @@
+//apply plugin: 'java'
+//apply plugin: 'groovy'
+
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+plugins {
+    id('java')
+    id('groovy')
+    id 'com.github.sherter.google-java-format' version '0.8'
+//    id "io.beekeeper.gradle.plugins.formatter" version "0.7.3"
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+}
+
+project.group 'ml.guxing.script'
+project.version '1.0-SNAPSHOT'
+project.sourceCompatibility = '1.8'
+project.targetCompatibility = '1.8'
+
+sourceSets {
+    main {
+        resources {
+            srcDir('src/main/resource')
+        }
+    }
+    test {
+        resources {
+            srcDir('src/test/resource')
+        }
+    }
+}
+
+task printInfo() {
+
+}
+
+dependencies {
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.27'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.12.1'
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.5.8'
+    compile group: 'org.springframework', name: 'spring-beans', version: '5.1.9.RELEASE'
+    compile group: 'org.springframework.amqp', name: 'spring-amqp', version: '2.1.8.RELEASE'
+    compile group: 'org.springframework.amqp', name: 'spring-rabbit', version: '2.1.8.RELEASE'
+
+}
