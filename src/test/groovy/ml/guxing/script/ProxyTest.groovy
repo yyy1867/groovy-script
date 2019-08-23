@@ -9,7 +9,7 @@ class ProxyTest {
         println("方法已修改")
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         def test = new GroovyClassLoadTest() 
         test.printTest()
         addmethod()

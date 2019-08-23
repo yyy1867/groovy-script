@@ -26,10 +26,10 @@ import java.nio.charset.Charset
 @ComponentScan(basePackages = "ml.guxing.script.mq")
 class RabbitMQMain implements ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
 
-    private ApplicationContext applicationContext;
+    private ApplicationContext applicationContext
 
     @Bean
-    public ConnectionFactory configCachingConnectionFactory() {
+    ConnectionFactory configCachingConnectionFactory() {
         // 配置使用缓存的连接工厂
         def connectionFactory = new CachingConnectionFactory()
         connectionFactory.setCacheMode(CachingConnectionFactory.CacheMode.CHANNEL)
@@ -44,7 +44,7 @@ class RabbitMQMain implements ApplicationListener<ContextRefreshedEvent>, Applic
     }
 
     @Bean
-    public AmqpTemplate configAmqpTemplate(ConnectionFactory connectionFactory) {
+    AmqpTemplate configAmqpTemplate(ConnectionFactory connectionFactory) {
         // 配置操作RabbitMQ的模板
         def template = new RabbitTemplate(connectionFactory)
         template.setEncoding("UTF-8")
@@ -52,7 +52,7 @@ class RabbitMQMain implements ApplicationListener<ContextRefreshedEvent>, Applic
     }
 
     @Bean
-    public AmqpAdmin configAmqpAdmin(AmqpTemplate amqpTemplate) {
+    AmqpAdmin configAmqpAdmin(AmqpTemplate amqpTemplate) {
         // 配置RabbitMQ的管理模板
         def admin = new RabbitAdmin(amqpTemplate)
         admin.setApplicationContext(this.applicationContext)
@@ -62,25 +62,27 @@ class RabbitMQMain implements ApplicationListener<ContextRefreshedEvent>, Applic
     }
 
     @Bean
-    public Queue configQueueOne() {
+    Queue configQueueOne() {
         new Queue("ml.guxing.script.one", true
                 , false, false, ["name": "测试队列", "desc": "测试使用的队列"])
     }
 
     @Bean
-    public Queue configQueueTwo() {
+    Queue configQueueTwo() {
         new Queue("ml.guxing.script.two", true
                 , false, false, ["name": "测试队列2", "desc": "测试使用的队列2"])
     }
 
     @Bean
-    public MessageListenerContainer configMessageListenerContainer(ConnectionFactory connectionFactory) {
+    MessageListenerContainer configMessageListenerContainer(ConnectionFactory connectionFactory) {
         // 设置监听容器
         def container = new SimpleMessageListenerContainer(connectionFactory)
         container.setQueueNames("ml.guxing.script.one")
         container.setAcknowledgeMode(AcknowledgeMode.AUTO)
         container.setConcurrentConsumers(1)
         container.setMaxConcurrentConsumers(6)
+        container.setReceiveTimeout(1000)
+        container.setTxSize()
         int index = 1
         container.setConsumerTagStrategy({ query ->
             def tag = "${query}_${index++}"
@@ -93,7 +95,7 @@ class RabbitMQMain implements ApplicationListener<ContextRefreshedEvent>, Applic
         container
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         def app = new AnnotationConfigApplicationContext(RabbitMQMain.class)
         def amqpTemplate = app.getBean(AmqpTemplate.class)
         def beans = app.getBeansOfType(Queue.class).values()

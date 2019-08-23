@@ -8,7 +8,7 @@ import java.nio.charset.Charset
 
 class SimpleMessageListener implements MessageListener {
 
-    public SimpleMessageListener() {
+    SimpleMessageListener() {
         super()
         println("已创建消费者实例:${SimpleMessageListener.class} 线程:${Thread.currentThread().getName()}")
     }
