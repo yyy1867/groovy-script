@@ -10,21 +10,19 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.amqp.rabbit.listener.MessageListenerContainer
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter
 import org.springframework.beans.BeansException
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.Configuration
 import org.springframework.context.event.ContextRefreshedEvent
 
-import java.nio.charset.Charset
-
-@Configuration
-@ComponentScan(basePackages = "ml.guxing.script.mq")
-class RabbitMQMain implements ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
+/**
+ * Spring单文件配置RabbitMQ
+ */
+class RabbitMQMainOne implements ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
 
     private ApplicationContext applicationContext
 
@@ -82,21 +80,20 @@ class RabbitMQMain implements ApplicationListener<ContextRefreshedEvent>, Applic
         container.setConcurrentConsumers(1)
         container.setMaxConcurrentConsumers(6)
         container.setReceiveTimeout(1000)
-        container.setTxSize()
+        container.setTxSize(1)
         int index = 1
         container.setConsumerTagStrategy({ query ->
             def tag = "${query}_${index++}"
             println tag
             tag.toString()
         })
-        container.setupMessageListener({ message ->
-            println "收到消息-> ${new String(message.getBody(), Charset.defaultCharset())}"
-        })
+        def adapter = new MessageListenerAdapter(new SimpleMessageListener(), "messageHander")
+        container.setupMessageListener(adapter)
         container
     }
 
     static void main(String[] args) {
-        def app = new AnnotationConfigApplicationContext(RabbitMQMain.class)
+        def app = new AnnotationConfigApplicationContext(RabbitMQMainOne.class)
         def amqpTemplate = app.getBean(AmqpTemplate.class)
         def beans = app.getBeansOfType(Queue.class).values()
         println beans
