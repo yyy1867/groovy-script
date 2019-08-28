@@ -39,10 +39,10 @@ class RabbitMQMainTwo {
 //        def arguments = ["x-dead-letter-exchange": "ml_guxing_script_1", "x-dead-letter-routing-key": "ml.guxing.script.timeout", "x-message-ttl": 3000]
         def arguments = ["x-dead-letter-exchange": "", "x-dead-letter-routing-key": "ml.guxing.script.four", "x-message-ttl": 3000]
         admin.declareExchange(new TopicExchange("ml_guxing_script_1", false, true, ["name": "默认交换机", "desc": "测试消息分发的默认交换机"]))
-        admin.declareQueue(new Queue("ml.guxing.script.three", false, false, true, arguments))
+        admin.declareQueue(new Queue("ml.guxing.script.three", false, true, true, arguments))
         admin.declareBinding(new Binding("ml.guxing.script.three", Binding.DestinationType.QUEUE, "ml_guxing_script_1", "ml.guxing.script.three.proxy", null))
 
-        admin.declareQueue(new Queue("ml.guxing.script.four", true, false, true, ["name": "超时队列"]))
+        admin.declareQueue(new Queue("ml.guxing.script.four", true, true, true, ["name": "超时队列"]))
         admin
     }
 
