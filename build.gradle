@@ -53,5 +53,10 @@ dependencies {
     compile group: 'org.springframework', name: 'spring-beans', version: '5.1.9.RELEASE'
     compile group: 'org.springframework.amqp', name: 'spring-amqp', version: '2.1.8.RELEASE'
     compile group: 'org.springframework.amqp', name: 'spring-rabbit', version: '2.1.8.RELEASE'
+    compile group: 'com.google.guava', name: 'guava', version: '28.1-jre'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 
+    // 动态代理测试
+    compile group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
+    compile group: 'cglib', name: 'cglib', version: '3.3.0'
 }
