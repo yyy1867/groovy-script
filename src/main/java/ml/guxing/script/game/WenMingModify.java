@@ -32,18 +32,34 @@ public class WenMingModify {
     }
 
     public static void main(String[] args) throws Exception {
-        Document doc = readXmlBakToDocument("D:\\temp\\wenming\\Policies.xml");
-        modifyXml(doc);
-        compressionDocument(doc.getDocumentElement());
-        writeXml("D:\\temp\\wenming\\Policies.xml", doc);
+//        Document doc = readXmlBakToDocument("D:\\temp\\wenming\\Policies.xml");
+//        modifyXml(doc);
+        modifyDir("D:\\temp\\wenming");
+//        compressionDocument(doc.getDocumentElement());
+//        writeXml("D:\\temp\\wenming\\Policies.xml", doc);
 //        System.out.println(doc);
+    }
+
+    private static void modifyDir(String path) throws Exception {
+        File file = new File(path);
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (File child : files) {
+                if (child.isFile() && child.getName().endsWith(".xml")) {
+                    System.out.println(child.getPath());
+                    Document doc = readXmlBakToDocument(child.getPath());
+                    modifyXml(doc);
+                } else if (child.isDirectory()) {
+                    modifyDir(child.getPath());
+                }
+            }
+        }
     }
 
     private static void modifyXml(Document doc) throws Exception {
         String elevl = "//ModifierArguments//Row[Name='Amount']|//ModifierArguments//Row[@Name='Amount']";
         String typeevlfmt = "//Modifiers//Row[ModifierId='%s']|//Modifiers//Row[@ModifierId='%s']";
         List<Element> els = query(elevl, doc);
-        System.out.println(els.size());
         for (Element el : els) {
             String modifierId = getVal("ModifierId", el);
             String val = getVal("Value", el);
