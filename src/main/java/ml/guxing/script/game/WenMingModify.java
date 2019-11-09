@@ -28,10 +28,10 @@ public class WenMingModify {
         XPATH = xPathFactory.newXPath();
     }
 
-    public static void main(String[] args) throws Exception {\
+    public static void main(String[] args) throws Exception {
 //        String path = "F:\\Game\\fengyunbianhuan\\fengyunbianhuan\\common\\Sid Meier's Civilization VI\\" +
 //                "DLC\\Expansion2\\Data\\Expansion1_Governors.xml";
-//        Document doc = readXmlBakToDocument(path);
+//        Document doc = readXmlBakToDocum2ent(path);
 //        modifyXml(doc);
 //        compressionDocument(doc.getDocumentElement());
 //        writeXml(path, doc);
@@ -41,7 +41,7 @@ public class WenMingModify {
     }
 
     private static void modifyDir(String path) throws Exception {
-        List<String> keys = Arrays.asList(new String[]{"Leaders", "Policies", "Civilizations", "Beliefs","Governors"});
+        List<String> keys = Arrays.asList(new String[]{"Leaders", "Policies", "Civilizations", "Beliefs", "Governors"});
         File dir = new File(path);
         if (dir.isDirectory()) {
             File[] files = dir.listFiles();
@@ -67,21 +67,21 @@ public class WenMingModify {
         }
     }
 
-    private static void modifyDir(String path) throws Exception {
-        File file = new File(path);
-        if (file.isDirectory()) {
-            File[] files = file.listFiles();
-            for (File child : files) {
-                if (child.isFile() && child.getName().endsWith(".xml")) {
-                    System.out.println(child.getPath());
-                    Document doc = readXmlBakToDocument(child.getPath());
-                    modifyXml(doc);
-                } else if (child.isDirectory()) {
-                    modifyDir(child.getPath());
-                }
-            }
-        }
-    }
+//    private static void modifyDir(String path) throws Exception {
+//        File file = new File(path);
+//        if (file.isDirectory()) {
+//            File[] files = file.listFiles();
+//            for (File child : files) {
+//                if (child.isFile() && child.getName().endsWith(".xml")) {
+//                    System.out.println(child.getPath());
+//                    Document doc = readXmlBakToDocument(child.getPath());
+//                    modifyXml(doc);
+//                } else if (child.isDirectory()) {
+//                    modifyDir(child.getPath());
+//                }
+//            }
+//        }
+//    }
 
     private static void modifyXml(Document doc) throws Exception {
         String elevl = "//ModifierArguments//Row[Name='Amount']|//ModifierArguments//Row[@Name='Amount']";
