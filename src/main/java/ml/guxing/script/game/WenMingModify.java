@@ -17,10 +17,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class WenMingModify {
 
@@ -31,13 +28,43 @@ public class WenMingModify {
         XPATH = xPathFactory.newXPath();
     }
 
-    public static void main(String[] args) throws Exception {
-//        Document doc = readXmlBakToDocument("D:\\temp\\wenming\\Policies.xml");
+    public static void main(String[] args) throws Exception {\
+//        String path = "F:\\Game\\fengyunbianhuan\\fengyunbianhuan\\common\\Sid Meier's Civilization VI\\" +
+//                "DLC\\Expansion2\\Data\\Expansion1_Governors.xml";
+//        Document doc = readXmlBakToDocument(path);
 //        modifyXml(doc);
-        modifyDir("D:\\temp\\wenming");
 //        compressionDocument(doc.getDocumentElement());
-//        writeXml("D:\\temp\\wenming\\Policies.xml", doc);
+//        writeXml(path, doc);
 //        System.out.println(doc);
+        modifyDir("F:\\Game\\fengyunbianhuan\\fengyunbianhuan\\common\\Sid Meier's Civilization VI\\DLC");
+        modifyDir("F:\\Game\\fengyunbianhuan\\fengyunbianhuan\\common\\Sid Meier's Civilization VI\\Base\\Assets\\Gameplay\\Data");
+    }
+
+    private static void modifyDir(String path) throws Exception {
+        List<String> keys = Arrays.asList(new String[]{"Leaders", "Policies", "Civilizations", "Beliefs","Governors"});
+        File dir = new File(path);
+        if (dir.isDirectory()) {
+            File[] files = dir.listFiles();
+            for (File file : files) {
+                if (file.isFile() && file.getName().endsWith(".xml")) {
+                    for (String key : keys) {
+                        if (file.getName().toLowerCase().indexOf(key.toLowerCase()) != -1) {
+                            if (file.getPath().toLowerCase().indexOf("icons") == -1) {
+                                if (file.getPath().toLowerCase().indexOf("\\data\\") != -1) {
+                                    System.out.println(file.getPath());
+                                    Document doc = readXmlBakToDocument(file.getPath());
+                                    modifyXml(doc);
+//                                    compressionDocument(doc.getDocumentElement());
+                                    writeXml(file.getPath(), doc);
+                                }
+                            }
+                        }
+                    }
+                } else if (file.isDirectory()) {
+                    modifyDir(file.getPath());
+                }
+            }
+        }
     }
 
     private static void modifyDir(String path) throws Exception {
